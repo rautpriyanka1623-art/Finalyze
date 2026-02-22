@@ -12,10 +12,15 @@ A simple project to track daily expenses.
 
 ## Folder Structure
 expense-tracker/
+│
 ├── index.html
 ├── style.css
 ├── script.js
+├── README.md
 ├── assets/
+│ ├── logo.png
+│ └── background.jpg
 └── data/
+    └── expenses.json
 ## Author
 Priyanka  Raut S
