@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Expense Tracker</title>
+    <title>Finalyze</title>
 </head>
 <body>
 
-    <h1>Expense Tracker</h1>
+    <h1>Finalyze</h1>
 
     <form method="POST">
         <label>Amount:</label>
@@ -23,13 +23,23 @@
     <h2>All Expenses</h2>
 
     <ul>
-        {% for expense in expenses %}
-            <li>
-                ₹{{ expense.amount }} -
-                {{ expense.category }} -
-                {{ expense.description }}
-            </li>
-        {% endfor %}
+        <table border="1" cellpadding="5">
+    <tr>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Date</th>
+    </tr>
+
+    {% for expense in expenses %}
+    <tr>
+        <td>₹{{ "%.2f"|format(expense.amount) }}</td>
+        <td>{{ expense.category }}</td>
+        <td>{{ expense.description }}</td>
+        <td>{{ expense.date }}</td>
+    </tr>
+    {% endfor %}
+</table>
     </ul>
 
 </body>

@@ -12,9 +12,10 @@ def home():
         description = request.form['description']
 
         expense = {
-            'amount': amount,
+            'amount': float(amount),
             'category': category,
-            'description': description
+            'description': description,
+            'date':date
         }
 
         expenses.append(expense)
