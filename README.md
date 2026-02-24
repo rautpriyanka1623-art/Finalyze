@@ -69,21 +69,25 @@ This project was developed as part of practical learning in Python web developme
 
 ```
 Finalyze/
-│── app.py
-│── templates/
-│ └── index.html
-│── static/
-│── assets/
-│ ├── logo/
-│ └── background/
-│── data/
-│── expenses/
-│── README.md
+│
+├── app.py
+├── data/              (empty folder)
+├── templates/
+│   ├── login.html
+│   ├── signup.html
+│   ├── forgot.html
+│   ├── dashboard.html
+│   ├── expenses.html
+│   ├── add_expense.html
+│   └── edit_expense.html
+├── static/
+|   ├──css
+|    └──style.css
+|   ├── js
+|     └──chart.js
+│──README.md
 ```
 
-
-
----
 
 ##  Future Improvements
 
