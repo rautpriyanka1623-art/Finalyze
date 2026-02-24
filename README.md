@@ -1,4 +1,5 @@
 # Finalyze   
+Live Demo:https://finalyze-1.onrender.com
 ### Smart Expense Tracking Web Application
 
 Finalyze is a lightweight and user-friendly expense tracking web application built using Flask.  
@@ -85,6 +86,8 @@ Finalyze/
 |    └──style.css
 |   ├── js
 |     └──chart.js
+├──requirements.txt
+├──procfile
 │──README.md
 ```
 
