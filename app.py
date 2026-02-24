@@ -141,7 +141,26 @@ def expenses_page():
     expenses = c.fetchall()
     conn.close()
 
-    return render_template("expenses.html", expenses=expenses)
+    # --- FIX CALCULATIONS ---
+    total_expense = 0
+    highest_expense = 0
+
+    for e in expenses:
+        amount = float(e["amount"])
+        total_expense += amount
+        if amount > highest_expense:
+            highest_expense = amount
+
+    total_budget = 150000  # Change if needed
+    remaining_expense = total_budget - total_expense
+
+    return render_template(
+        "expenses.html",
+        expenses=expenses,
+        total_expense=total_expense,
+        highest_expense=highest_expense,
+        remaining_expense=remaining_expense
+    )
 
 
 @app.route("/add", methods=["GET", "POST"])

@@ -74,21 +74,27 @@ body { margin:0; font-family:Arial; }
     <div class="col-md-4">
         <div class="summary-card pastel-blue">
             <div class="card-title">Total Expense</div>
-            <div class="card-value">₹ {{ total_expense }}</div>
+            <div class="card-value">
+                ₹ {{ "%.2f"|format(total_expense) }}
+            </div>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="summary-card pastel-green">
             <div class="card-title">Remaining Budget</div>
-            <div class="card-value">₹ {{ remaining_expense }}</div>
+            <div class="card-value">
+                ₹ {{ "%.2f"|format(remaining_expense) }}
+            </div>
         </div>
     </div>
 
     <div class="col-md-4">
         <div class="summary-card pastel-pink">
             <div class="card-title">Highest Expense</div>
-            <div class="card-value">₹ {{ highest_expense }}</div>
+            <div class="card-value">
+                ₹ {{ "%.2f"|format(highest_expense) }}
+            </div>
         </div>
     </div>
 </div>
@@ -105,7 +111,7 @@ body { margin:0; font-family:Arial; }
 <tr>
 <td>{{ e.date }}</td>
 <td>{{ e.category }}</td>
-<td>₹ {{ e.amount }}</td>
+<td>₹ {{ "%.2f"|format(e.amount) }}</td>
 <td>
 <a href="/edit/{{ e.id }}" class="btn btn-warning btn-sm">Edit</a>
 <a href="/delete/{{ e.id }}" class="btn btn-danger btn-sm">Delete</a>
