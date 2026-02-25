@@ -134,7 +134,7 @@ def dashboard():
 
     return render_template("dashboard.html", expenses=expenses)
 
-# ------------------ Updated Expenses Route ------------------
+# ------------------ Fixed Expenses Route ------------------
 @app.route("/expenses", methods=["GET", "POST"])
 def expenses_page():
     if "user_id" not in session:
@@ -143,27 +143,27 @@ def expenses_page():
     conn = get_db()
     c = conn.cursor()
 
-    # Handle POST request to update user budget
+    # ---------- Handle Total Budget form ----------
     if request.method == "POST":
         try:
             total_budget_input = float(request.form["total_budget"])
             c.execute("UPDATE users SET budget=? WHERE id=?", (total_budget_input, session["user_id"]))
             conn.commit()
-        except:
-            pass  # fallback if invalid input
+        except Exception as e:
+            print("Error updating budget:", e)
 
-    # Fetch expenses for user
+    # ---------- Fetch expenses ----------
     c.execute("SELECT * FROM expenses WHERE user_id=?", (session["user_id"],))
     expenses = c.fetchall()
 
-    # Fetch user's total budget
+    # ---------- Fetch user's total budget ----------
     c.execute("SELECT budget FROM users WHERE id=?", (session["user_id"],))
     row = c.fetchone()
     total_budget = row["budget"] if row and row["budget"] else 150000
 
     conn.close()
 
-    # Calculate totals
+    # ---------- Calculate totals ----------
     total_expense = sum(float(e["amount"]) for e in expenses)
     highest_expense = max([float(e["amount"]) for e in expenses], default=0)
     remaining_expense = total_budget - total_expense

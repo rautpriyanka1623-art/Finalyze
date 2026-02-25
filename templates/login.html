@@ -25,7 +25,6 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
-        /* Website Name Styling */
         .brand-name {
             font-size: 36px;
             font-weight: bold;
@@ -68,13 +67,23 @@
             text-decoration: none;
             font-weight: bold;
         }
+
+        .error-message {
+            color: #ffdddd;
+            background: rgba(255, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
     </style>
 </head>
 <body>
 
 <div class="login-box">
 
-    <!-- Website Name -->
     <div class="brand-name">Finalyst</div>
 
     <form method="POST">
@@ -83,12 +92,33 @@
         <button type="submit">Log In</button>
     </form>
 
+    <!-- Error Message -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div id="error-message" class="error-message">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <div class="links">
         <p><a href="/forgot">Forgot Password?</a></p>
         <p>Don't have an account? <a href="/signup">Sign Up</a></p>
     </div>
 
 </div>
+
+<script>
+    // Auto-hide error message after 3 seconds
+    window.addEventListener('DOMContentLoaded', () => {
+        const error = document.getElementById('error-message');
+        if (error) {
+            setTimeout(() => {
+                error.style.opacity = '0';
+            }, 3000); // 3000ms = 3 seconds
+        }
+    });
+</script>
 
 </body>
 </html>
