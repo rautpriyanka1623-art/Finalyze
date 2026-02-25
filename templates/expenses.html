@@ -43,6 +43,7 @@ body { margin:0; font-family:Arial; }
 .pastel-blue { background:#d0f0fd; }
 .pastel-green { background:#d8f8e1; }
 .pastel-pink { background:#ffd6e8; }
+.pastel-yellow { background:#fff4c2; }
 
 .card-title {
     font-size:18px;
@@ -69,9 +70,27 @@ body { margin:0; font-family:Arial; }
 
 <h2 class="mb-4">All Expenses</h2>
 
+<!-- Set Total Budget Form -->
+<form method="POST" class="mb-4">
+    <div class="input-group">
+        <span class="input-group-text">Set Total Budget (₹)</span>
+        <input type="number" name="total_budget" class="form-control" placeholder="Enter your monthly budget" min="1" required value="{{ total_budget }}">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+
 <!-- Summary Section -->
 <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <div class="summary-card pastel-yellow">
+            <div class="card-title">Total Budget</div>
+            <div class="card-value">
+                ₹ {{ "%.2f"|format(total_budget) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
         <div class="summary-card pastel-blue">
             <div class="card-title">Total Expense</div>
             <div class="card-value">
@@ -80,7 +99,7 @@ body { margin:0; font-family:Arial; }
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="summary-card pastel-green">
             <div class="card-title">Remaining Budget</div>
             <div class="card-value">
@@ -89,7 +108,7 @@ body { margin:0; font-family:Arial; }
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="summary-card pastel-pink">
             <div class="card-title">Highest Expense</div>
             <div class="card-value">

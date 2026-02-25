@@ -10,18 +10,22 @@ DB_PATH = "data/expenses.db"
 if not os.path.exists("data"):
     os.makedirs("data")
 
+# ------------------ Initialize DB ------------------
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
+    # Create users table with budget column
     c.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE,
-        password TEXT
+        password TEXT,
+        budget REAL DEFAULT 150000
     )
     """)
 
+    # Create expenses table
     c.execute("""
     CREATE TABLE IF NOT EXISTS expenses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,6 +35,12 @@ def init_db():
         amount REAL
     )
     """)
+
+    # Add budget column to existing users table if missing
+    try:
+        c.execute("ALTER TABLE users ADD COLUMN budget REAL DEFAULT 150000")
+    except sqlite3.OperationalError:
+        pass  # column already exists
 
     conn.commit()
     conn.close()
@@ -42,13 +52,12 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-
+# ------------------ Routes ------------------
 @app.route("/")
 def home():
     if "user_id" in session:
         return redirect("/dashboard")
     return redirect("/login")
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -71,7 +80,6 @@ def login():
 
     return render_template("login.html")
 
-
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -91,7 +99,6 @@ def signup():
 
     return render_template("signup.html")
 
-
 @app.route("/forgot", methods=["GET", "POST"])
 def forgot():
     if request.method == "POST":
@@ -109,12 +116,10 @@ def forgot():
 
     return render_template("forgot.html")
 
-
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/login")
-
 
 @app.route("/dashboard")
 def dashboard():
@@ -129,39 +134,49 @@ def dashboard():
 
     return render_template("dashboard.html", expenses=expenses)
 
-
-@app.route("/expenses")
+# ------------------ Updated Expenses Route ------------------
+@app.route("/expenses", methods=["GET", "POST"])
 def expenses_page():
     if "user_id" not in session:
         return redirect("/login")
 
     conn = get_db()
     c = conn.cursor()
+
+    # Handle POST request to update user budget
+    if request.method == "POST":
+        try:
+            total_budget_input = float(request.form["total_budget"])
+            c.execute("UPDATE users SET budget=? WHERE id=?", (total_budget_input, session["user_id"]))
+            conn.commit()
+        except:
+            pass  # fallback if invalid input
+
+    # Fetch expenses for user
     c.execute("SELECT * FROM expenses WHERE user_id=?", (session["user_id"],))
     expenses = c.fetchall()
+
+    # Fetch user's total budget
+    c.execute("SELECT budget FROM users WHERE id=?", (session["user_id"],))
+    row = c.fetchone()
+    total_budget = row["budget"] if row and row["budget"] else 150000
+
     conn.close()
 
-    # --- FIX CALCULATIONS ---
-    total_expense = 0
-    highest_expense = 0
-
-    for e in expenses:
-        amount = float(e["amount"])
-        total_expense += amount
-        if amount > highest_expense:
-            highest_expense = amount
-
-    total_budget = 150000  # Change if needed
+    # Calculate totals
+    total_expense = sum(float(e["amount"]) for e in expenses)
+    highest_expense = max([float(e["amount"]) for e in expenses], default=0)
     remaining_expense = total_budget - total_expense
 
     return render_template(
         "expenses.html",
         expenses=expenses,
+        total_budget=total_budget,
         total_expense=total_expense,
         highest_expense=highest_expense,
         remaining_expense=remaining_expense
     )
-
+# ----------------------------------------------------------
 
 @app.route("/add", methods=["GET", "POST"])
 def add_expense():
@@ -185,7 +200,6 @@ def add_expense():
         return redirect("/expenses")
 
     return render_template("add_expense.html")
-
 
 @app.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit(id):
@@ -216,7 +230,6 @@ def edit(id):
 
     return render_template("edit_expense.html", expense=expense)
 
-
 @app.route("/delete/<int:id>")
 def delete(id):
     if "user_id" not in session:
@@ -230,6 +243,5 @@ def delete(id):
 
     return redirect("/expenses")
 
-
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
